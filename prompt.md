@@ -1,10 +1,23 @@
-# prompt.md
+# Prompt
 
-Replace this file's contents with the initial prompt you used to generate your final project app.
+Create a brand-new SwiftUI iOS app named **BookLibrary** for a student class project.
 
-A few notes:
-- You may take as many runs at the prompt as you like — only include the prompt from the run you're most happy with.
-- - You are not permitted to have the agent edit the code after it's created.
-  - - You can use ChatGPT or similar tools to help shape your initial prompt.
-   
-    - Getting started with Markdown: https://www.markdownguide.org/basic-syntax/
+Requirements summary:
+- Two tabs inside a `TabView`: **Discover** and **My Library**
+- `NavigationStack` inside each tab
+- Google Books API search using `URLSession`, `Codable`, and `async/await`
+- Discover flow with:
+  - searchable query field
+  - loading/error/empty/result states
+  - row with cover, title, author, and average rating
+  - detail page with metadata and Add to My Library button
+- My Library flow with:
+  - saved books list
+  - plus button to manually add a book
+  - detail page with personal rating and note
+  - reusable 5-star clickable `StarRatingView`
+- Beginner-friendly structure with separate files and `// MARK:` comments
+- Warm “light academia” styling (cream, beige, muted brown, olive/gold accents)
+- Optional simple persistence with `UserDefaults`
+
+Deliver all requested files with full compile-ready SwiftUI code.

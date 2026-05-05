@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AddBookView: View {
+struct AddCustomBookView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var myLibraryViewModel: MyLibraryViewModel
 
@@ -9,10 +9,12 @@ struct AddBookView: View {
     @State private var description = ""
     @State private var personalNote = ""
     @State private var personalRating = 0
+    @State private var selectedListID: String = ""
 
     private var canSave: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !selectedListID.isEmpty
     }
 
     var body: some View {
@@ -29,6 +31,14 @@ struct AddBookView: View {
                     TextEditor(text: $description)
                         .font(AppTheme.bodyFont(15))
                         .frame(minHeight: 110)
+                }
+            }
+
+            Section("Save To List") {
+                Picker("List", selection: $selectedListID) {
+                    ForEach(myLibraryViewModel.allLists) { list in
+                        Text(list.name).tag(list.id)
+                    }
                 }
             }
 
@@ -54,7 +64,7 @@ struct AddBookView: View {
         }
         .scrollContentBackground(.hidden)
         .background(AppTheme.cream)
-        .navigationTitle("Add Book")
+        .navigationTitle("Custom Book")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -64,29 +74,29 @@ struct AddBookView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Add") {
+                Button("Save") {
                     saveBook()
                 }
                 .disabled(!canSave)
             }
         }
+        .task {
+            if selectedListID.isEmpty {
+                selectedListID = myLibraryViewModel.allLists.first?.id ?? ""
+            }
+        }
     }
 
     private func saveBook() {
-        myLibraryViewModel.addManualBook(
-            title: title,
-            author: author,
-            description: description,
-            personalNote: personalNote,
-            personalRating: personalRating == 0 ? nil : personalRating
-        )
-        dismiss()
-    }
-}
+        let customBook = Book.custom(title: title, author: author, description: description)
 
-#Preview {
-    NavigationStack {
-        AddBookView()
-            .environmentObject(MyLibraryViewModel())
+        _ = myLibraryViewModel.addBook(
+            customBook,
+            toListID: selectedListID,
+            personalRating: personalRating == 0 ? nil : personalRating,
+            personalNote: personalNote
+        )
+
+        dismiss()
     }
 }

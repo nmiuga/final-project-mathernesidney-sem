@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var bookSearchViewModel = BookSearchViewModel()
     @StateObject private var myLibraryViewModel = MyLibraryViewModel()
 
     var body: some View {
@@ -19,6 +20,7 @@ struct ContentView: View {
                 Label("My Library", systemImage: "books.vertical")
             }
         }
+        .environmentObject(bookSearchViewModel)
         .environmentObject(myLibraryViewModel)
         .tint(AppTheme.accentOlive)
     }
@@ -34,14 +36,14 @@ enum AppTheme {
     static let accentOlive = Color(red: 0.45, green: 0.49, blue: 0.33)
 
     static func headingFont(_ size: CGFloat) -> Font {
-        // Add Baskerville to your project if you want a guaranteed custom heading font.
-        // If unavailable on device, iOS will gracefully fall back.
+        // Add Baskerville to your project for guaranteed custom headings.
+        // This falls back gracefully if the font is not installed.
         .custom("Baskerville", size: size)
     }
 
     static func bodyFont(_ size: CGFloat) -> Font {
-        // Add Nunito to your project if you want a guaranteed custom body font.
-        // If unavailable on device, iOS will gracefully fall back.
+        // Add Nunito to your project for guaranteed body typography.
+        // This falls back gracefully if the font is not installed.
         .custom("Nunito-Regular", size: size)
     }
 }

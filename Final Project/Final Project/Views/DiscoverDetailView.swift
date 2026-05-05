@@ -1,21 +1,28 @@
 import SwiftUI
 
 struct DiscoverDetailView: View {
-    let googleBook: GoogleBookItem
+    let book: Book
 
     @EnvironmentObject private var myLibraryViewModel: MyLibraryViewModel
-
-    private var mappedBook: Book {
-        Book(googleBook: googleBook)
-    }
-
-    private var alreadySaved: Bool {
-        myLibraryViewModel.contains(bookID: googleBook.id)
-    }
+    @State private var isShowingAddToListSheet = false
 
     private var coverURL: URL? {
-        guard let cover = mappedBook.coverURL else { return nil }
+        guard let cover = book.coverURL else { return nil }
         return URL(string: cover)
+    }
+
+    private var savedStatusText: String? {
+        let containingLists = myLibraryViewModel.listsContaining(bookID: book.id)
+
+        if containingLists.isEmpty {
+            return nil
+        }
+
+        if containingLists.count == 1 {
+            return "Saved in \(containingLists[0].name)"
+        }
+
+        return "Already in \(containingLists.count) Lists"
     }
 
     var body: some View {
@@ -23,11 +30,11 @@ struct DiscoverDetailView: View {
             VStack(alignment: .leading, spacing: 16) {
                 coverImage
 
-                Text(mappedBook.title)
+                Text(book.title)
                     .font(AppTheme.headingFont(30))
                     .foregroundStyle(AppTheme.mutedBrown)
 
-                Text(mappedBook.authorText)
+                Text(book.authorText)
                     .font(AppTheme.bodyFont(18))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
 
@@ -37,22 +44,43 @@ struct DiscoverDetailView: View {
                     .font(AppTheme.headingFont(24))
                     .foregroundStyle(AppTheme.mutedBrown)
 
-                Text(mappedBook.description.isEmpty ? "No description available." : mappedBook.description)
+                Text(book.description.isEmpty ? "No description available." : book.description)
                     .font(AppTheme.bodyFont(16))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.9))
 
-                addButton
+                Button {
+                    isShowingAddToListSheet = true
+                } label: {
+                    Text("Add to List")
+                        .font(AppTheme.bodyFont(16))
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accentOlive)
+
+                if let savedStatusText {
+                    Text(savedStatusText)
+                        .font(AppTheme.bodyFont(14))
+                        .foregroundStyle(AppTheme.mutedBrown.opacity(0.75))
+                }
             }
             .padding()
         }
         .background(AppTheme.cream.ignoresSafeArea())
         .navigationTitle("Book Details")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isShowingAddToListSheet) {
+            AddToListSheet(book: book)
+                .presentationDetents([.medium, .large])
+                .environmentObject(myLibraryViewModel)
+        }
     }
 
     private var metadataSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let rating = mappedBook.averageRating {
+            if let rating = book.averageRating {
                 Label(String(format: "Public Rating: %.1f", rating), systemImage: "star.fill")
                     .foregroundStyle(AppTheme.accentGold)
                     .font(AppTheme.bodyFont(15))
@@ -62,14 +90,20 @@ struct DiscoverDetailView: View {
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.75))
             }
 
-            if let publishedDate = mappedBook.publishedDate {
+            if let publishedDate = book.publishedDate {
                 Text("Published: \(publishedDate)")
                     .font(AppTheme.bodyFont(15))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
             }
 
-            if let pageCount = mappedBook.pageCount {
+            if let pageCount = book.pageCount {
                 Text("Pages: \(pageCount)")
+                    .font(AppTheme.bodyFont(15))
+                    .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
+            }
+
+            if !book.categories.isEmpty {
+                Text("Categories: \(book.categoriesText)")
                     .font(AppTheme.bodyFont(15))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
             }
@@ -78,22 +112,6 @@ struct DiscoverDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.cardBeige.opacity(0.7))
         .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-
-    private var addButton: some View {
-        Button {
-            myLibraryViewModel.addGoogleBook(googleBook)
-        } label: {
-            Text(alreadySaved ? "Already in My Library" : "Add to My Library")
-                .font(AppTheme.bodyFont(16))
-                .fontWeight(.semibold)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-        }
-        .buttonStyle(.borderedProminent)
-        .tint(alreadySaved ? AppTheme.mutedBrown.opacity(0.5) : AppTheme.accentOlive)
-        .disabled(alreadySaved)
-        .padding(.top, 4)
     }
 
     private var coverImage: some View {
@@ -130,25 +148,5 @@ struct DiscoverDetailView: View {
                 .font(.system(size: 44))
                 .foregroundStyle(AppTheme.accentOlive)
         }
-    }
-}
-
-#Preview {
-    let sample = GoogleBookItem(
-        id: "2",
-        volumeInfo: GoogleVolumeInfo(
-            title: "The Great Book",
-            authors: ["A. Writer"],
-            description: "A sample description for preview purposes.",
-            averageRating: 4.5,
-            publishedDate: "2023-09-01",
-            pageCount: 314,
-            imageLinks: nil
-        )
-    )
-
-    NavigationStack {
-        DiscoverDetailView(googleBook: sample)
-            .environmentObject(MyLibraryViewModel())
     }
 }

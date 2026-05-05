@@ -1,54 +1,75 @@
 # Edits Made
 
-## Project Structure
-- Replaced starter app entry with `BookLibraryApp.swift`.
-- Updated `ContentView.swift` to use a 2-tab layout with `NavigationStack` per tab.
-- Added folders and files:
-  - `Models/`
-  - `Services/`
-  - `ViewModels/`
-  - `Views/`
+## Architecture Refactor
+- Rebuilt the app around three beginner-friendly core models:
+  - `Book`
+  - `SavedBook`
+  - `BookList`
+- Updated state management to focus on list-based organization instead of one flat library.
 
-## Data Models
-- Added `Book` model for app-level storage and library features.
-- Added `GoogleBooksResponse` models for API decoding.
-- Included mapping from API model to local `Book` model.
+## Models Added/Updated
+- `Models/Book.swift`
+  - API-ready fields: title, authors, description, cover URL, ratings, published date, page count, categories.
+  - Includes API mapping helper and custom manual-book helper.
+- `Models/SavedBook.swift`
+  - Tracks personal rating, personal note, and date added.
+- `Models/BookList.swift`
+  - Named list model with `books: [SavedBook]` and default/custom support.
+- `Models/GoogleBooksResponse.swift`
+  - Expanded decoding to include categories and image links.
 
 ## Networking
-- Added `GoogleBooksService` using:
-  - `URLSession`
-  - `async/await`
-  - `Codable`
-- Implemented error handling for invalid URL/response/server/decode issues.
+- `Services/GoogleBooksService.swift`
+  - Uses `URLSession` + `async/await` + `Codable`.
+  - Returns mapped `[Book]`.
+  - Handles readable URL/response/server/decoding errors.
 
 ## ViewModels
-- Added `BookSearchViewModel` with discover states:
-  - empty prompt
-  - loading
-  - error
-  - no results
-  - results
-- Added `MyLibraryViewModel` with:
-  - add from API
-  - add manual book
-  - no-duplicate protection
-  - update personal rating/note
-  - alphabetical sorting
-  - delete support
-  - `UserDefaults` persistence
+- `BookSearchViewModel`
+  - Added homepage section loading for:
+    - Popular Now
+    - Fantasy
+    - Romance
+    - Mystery
+    - Science Fiction
+    - Young Adult
+  - Added search handling with lightweight debounced typing behavior.
+  - Supports separate loading/error states for homepage and search.
+- `MyLibraryViewModel`
+  - Added default lists automatically:
+    - Want to Read
+    - Reading
+    - Finished
+  - Added custom list creation.
+  - Added add-to-list logic with duplicate prevention per list.
+  - Added list/detail helpers and personal note/rating update behavior.
+  - Added lightweight `UserDefaults` persistence for all lists/books.
 
-## Views
-- Added Discover screens:
+## Views Rebuilt
+- Discover side:
   - `DiscoverView`
+  - `DiscoverSectionView`
   - `DiscoverBookRow`
   - `DiscoverDetailView`
-- Added My Library screens:
+- Library side:
   - `MyLibraryView`
+  - `LibraryListRow`
+  - `BookListDetailView`
   - `LibraryBookRow`
   - `LibraryDetailView`
-  - `AddBookView`
-- Added reusable `StarRatingView` with 5 clickable stars and optional unrated state.
+- Add flows:
+  - `AddBookSearchView`
+  - `AddCustomBookView`
+  - `CreateListView`
+  - `AddToListSheet`
+- Shared:
+  - `StarRatingView`
 
-## Design
-- Applied light-academia visual palette with reusable theme values.
-- Added font helper functions for Baskerville/Nunito with graceful fallback behavior.
+## Behavior Changes
+- Discover now works as both homepage browsing + search.
+- Add-to-library flow now targets specific user lists.
+- My Library now centers on list management and list counts.
+- Saved book details now support editable personal rating and note.
+
+## Build
+- Recompiled after refactor and resolved compile issues.

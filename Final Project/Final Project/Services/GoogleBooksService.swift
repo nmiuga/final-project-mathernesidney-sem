@@ -8,11 +8,11 @@ struct GoogleBooksService {
         self.session = session
     }
 
-    func searchBooks(query: String) async throws -> [GoogleBookItem] {
+    func searchBooks(query: String, maxResults: Int = 20) async throws -> [Book] {
         var components = URLComponents(string: "https://www.googleapis.com/books/v1/volumes")
         components?.queryItems = [
             URLQueryItem(name: "q", value: query),
-            URLQueryItem(name: "maxResults", value: "20"),
+            URLQueryItem(name: "maxResults", value: "\(max(1, min(maxResults, 40)))"),
             URLQueryItem(name: "printType", value: "books"),
             URLQueryItem(name: "key", value: apiKey)
         ]
@@ -32,8 +32,8 @@ struct GoogleBooksService {
         }
 
         do {
-            let decodedResponse = try JSONDecoder().decode(GoogleBooksResponse.self, from: data)
-            return decodedResponse.items ?? []
+            let decoded = try JSONDecoder().decode(GoogleBooksResponse.self, from: data)
+            return (decoded.items ?? []).map(Book.init(googleBook:))
         } catch {
             throw GoogleBooksServiceError.decodingFailed
         }
@@ -49,13 +49,13 @@ enum GoogleBooksServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Could not create a valid search URL."
+            return "Could not create the request URL."
         case .invalidResponse:
-            return "The server sent an invalid response."
+            return "The server returned an invalid response."
         case .serverError(let statusCode):
-            return "Server error (code \(statusCode)). Please try again."
+            return "Google Books request failed (code \(statusCode))."
         case .decodingFailed:
-            return "Could not read book data from Google Books."
+            return "Could not decode book data from Google Books."
         }
     }
 }

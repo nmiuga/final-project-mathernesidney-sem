@@ -1,15 +1,11 @@
 import SwiftUI
 
 struct DiscoverBookRow: View {
-    let googleBook: GoogleBookItem
+    let book: Book
 
-    private var title: String { googleBook.volumeInfo.title }
-    private var authorText: String {
-        (googleBook.volumeInfo.authors ?? ["Unknown Author"]).joined(separator: ", ")
-    }
     private var coverURL: URL? {
-        guard let urlString = googleBook.volumeInfo.coverURLString else { return nil }
-        return URL(string: urlString.replacingOccurrences(of: "http://", with: "https://"))
+        guard let cover = book.coverURL else { return nil }
+        return URL(string: cover)
     }
 
     var body: some View {
@@ -17,23 +13,23 @@ struct DiscoverBookRow: View {
             coverImage
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(title)
+                Text(book.title)
                     .font(AppTheme.headingFont(18))
                     .foregroundStyle(AppTheme.mutedBrown)
                     .lineLimit(2)
 
-                Text(authorText)
+                Text(book.authorText)
                     .font(AppTheme.bodyFont(14))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
                     .lineLimit(2)
 
-                if let averageRating = googleBook.volumeInfo.averageRating {
+                if let averageRating = book.averageRating {
                     HStack(spacing: 6) {
                         Image(systemName: "star.fill")
                             .foregroundStyle(AppTheme.accentGold)
 
                         Text(String(format: "%.1f", averageRating))
-                            .font(AppTheme.bodyFont(14))
+                            .font(AppTheme.bodyFont(13))
                             .foregroundStyle(AppTheme.mutedBrown)
                     }
                 } else {
@@ -76,27 +72,8 @@ struct DiscoverBookRow: View {
                 .fill(AppTheme.cardBeige)
 
             Image(systemName: "book.closed")
-                .font(.system(size: 20))
+                .font(.system(size: 22))
                 .foregroundStyle(AppTheme.accentOlive)
         }
     }
-}
-
-#Preview {
-    let sample = GoogleBookItem(
-        id: "1",
-        volumeInfo: GoogleVolumeInfo(
-            title: "Sample Book",
-            authors: ["Sample Author"],
-            description: "Sample",
-            averageRating: 4.2,
-            publishedDate: "2024",
-            pageCount: 280,
-            imageLinks: nil
-        )
-    )
-
-    DiscoverBookRow(googleBook: sample)
-        .padding()
-        .background(AppTheme.cream)
 }

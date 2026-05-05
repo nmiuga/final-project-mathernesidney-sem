@@ -19,7 +19,11 @@ struct StarRatingView: View {
                 } label: {
                     Image(systemName: rating >= index ? "star.fill" : "star")
                         .font(.system(size: starSize))
-                        .foregroundStyle(rating >= index ? AppTheme.accentGold : AppTheme.mutedBrown.opacity(0.45))
+                        .foregroundStyle(
+                            rating >= index
+                            ? AppTheme.accentGold
+                            : AppTheme.mutedBrown.opacity(0.45)
+                        )
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Rate \(index) star\(index == 1 ? "" : "s")")

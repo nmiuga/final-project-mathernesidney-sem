@@ -4,7 +4,7 @@ struct GoogleBooksResponse: Codable {
     let items: [GoogleBookItem]?
 }
 
-struct GoogleBookItem: Codable, Identifiable {
+struct GoogleBookItem: Codable {
     let id: String
     let volumeInfo: GoogleVolumeInfo
 }
@@ -16,11 +16,8 @@ struct GoogleVolumeInfo: Codable {
     let averageRating: Double?
     let publishedDate: String?
     let pageCount: Int?
+    let categories: [String]?
     let imageLinks: GoogleImageLinks?
-
-    var coverURLString: String? {
-        imageLinks?.thumbnail ?? imageLinks?.smallThumbnail
-    }
 }
 
 struct GoogleImageLinks: Codable {

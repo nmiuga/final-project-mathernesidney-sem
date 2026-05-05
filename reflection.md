@@ -1,22 +1,26 @@
 # Reflection
 
-This build focused on making a class-project app that feels polished but still easy to explain in a walkthrough.
+This version shifts the project from a basic save-list app into a more realistic mini Goodreads-style experience while staying class-friendly.
 
-## What Went Well
-- The Google Books API integration stayed simple by using one search endpoint and mapping results into a local `Book` model.
-- Using separate view models made state handling clear for beginners:
-  - `BookSearchViewModel` for API search logic
-  - `MyLibraryViewModel` for saved books and personal data
-- The reusable `StarRatingView` reduced duplicate code and kept rating behavior consistent across screens.
+## What Worked Well
+- The list-based data model (`Book`, `SavedBook`, `BookList`) made features easier to reason about.
+- Separating discover logic (`BookSearchViewModel`) from library logic (`MyLibraryViewModel`) kept the code readable.
+- Reusing one `AddToListSheet` in multiple places reduced duplicate UI code and made behavior consistent.
 
-## Challenges
-- API data is inconsistent (missing images, ratings, or descriptions), so defensive UI fallbacks were necessary in almost every view.
-- Keeping the app visually cohesive required a central theme setup rather than ad-hoc colors and fonts per screen.
+## Main Challenges
+- Keeping Discover both browsable and searchable required clear UI-state branching:
+  - section homepage when search is empty
+  - search results when query exists
+- Preventing duplicates in a list while still allowing the same book in different lists required careful list-level checks.
+- Personal notes/ratings belong to saved entries, not the shared `Book` object, which required modeling with `SavedBook`.
 
-## Improvements for a Future Iteration
-- Add debounce search so API requests are not triggered too frequently.
-- Add optional filtering/sorting controls in My Library (rating, source type, date added).
-- Add lightweight unit tests for model mapping and view model behavior.
-- Persist additional metadata like date-added and last-edited.
+## Why This Is Good for Class Presentation
+- The app demonstrates real API usage with modern Swift concurrency.
+- The architecture is simple enough to explain quickly (models -> service -> view models -> views).
+- The UI feels polished and portfolio-ready without using advanced frameworks.
 
-Overall, the app now meets the project goals: discover books from a real API and save/read/annotate them in a personal library.
+## Next Improvements (Optional)
+- Add small loading placeholders (skeleton cards) for homepage sections.
+- Add reorder support for custom lists.
+- Add optional filter/sort controls inside each list.
+- Move API key to a config file or environment-based setup for safer sharing.

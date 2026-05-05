@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct LibraryBookRow: View {
-    let book: Book
+    let savedBook: SavedBook
 
     private var coverURL: URL? {
-        guard let cover = book.coverURL else { return nil }
+        guard let cover = savedBook.book.coverURL else { return nil }
         return URL(string: cover)
     }
 
@@ -13,17 +13,17 @@ struct LibraryBookRow: View {
             coverImage
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(book.title)
+                Text(savedBook.book.title)
                     .font(AppTheme.headingFont(18))
                     .foregroundStyle(AppTheme.mutedBrown)
                     .lineLimit(2)
 
-                Text(book.authorText)
+                Text(savedBook.book.authorText)
                     .font(AppTheme.bodyFont(14))
                     .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
                     .lineLimit(2)
 
-                if let personalRating = book.personalRating {
+                if let personalRating = savedBook.personalRating {
                     HStack(spacing: 6) {
                         Image(systemName: "star.fill")
                             .foregroundStyle(AppTheme.accentGold)
@@ -75,18 +75,4 @@ struct LibraryBookRow: View {
                 .foregroundStyle(AppTheme.accentOlive)
         }
     }
-}
-
-#Preview {
-    LibraryBookRow(
-        book: Book.manual(
-            title: "Sample Library Book",
-            author: "Preview Author",
-            description: "A simple preview description.",
-            personalNote: "Very interesting chapters!",
-            personalRating: 4
-        )
-    )
-    .padding()
-    .background(AppTheme.cream)
 }

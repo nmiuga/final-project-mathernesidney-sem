@@ -2,76 +2,78 @@ import SwiftUI
 
 struct MyLibraryView: View {
     @EnvironmentObject private var myLibraryViewModel: MyLibraryViewModel
-    @State private var isShowingAddBookView = false
+
+    @State private var isShowingAddBookSearch = false
+    @State private var isShowingCreateList = false
 
     var body: some View {
         ZStack {
-            AppTheme.cream
-                .ignoresSafeArea()
+            AppTheme.cream.ignoresSafeArea()
 
-            if myLibraryViewModel.books.isEmpty {
-                emptyState
-            } else {
-                libraryList
+            List {
+                Section("Default Lists") {
+                    ForEach(myLibraryViewModel.defaultLists) { list in
+                        NavigationLink {
+                            BookListDetailView(listID: list.id)
+                        } label: {
+                            LibraryListRow(list: list)
+                        }
+                        .listRowBackground(AppTheme.cardBeige.opacity(0.82))
+                    }
+                }
+
+                Section("Custom Lists") {
+                    if myLibraryViewModel.customLists.isEmpty {
+                        Text("Create your first custom list to organize favorites.")
+                            .font(AppTheme.bodyFont(14))
+                            .foregroundStyle(AppTheme.mutedBrown.opacity(0.75))
+                            .listRowBackground(AppTheme.cardBeige.opacity(0.7))
+                    } else {
+                        ForEach(myLibraryViewModel.customLists) { list in
+                            NavigationLink {
+                                BookListDetailView(listID: list.id)
+                            } label: {
+                                LibraryListRow(list: list)
+                            }
+                            .listRowBackground(AppTheme.cardBeige.opacity(0.82))
+                        }
+                        .onDelete(perform: myLibraryViewModel.deleteCustomLists)
+                    }
+                }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("My Library")
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    isShowingCreateList = true
+                } label: {
+                    Label("New List", systemImage: "folder.badge.plus")
+                }
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isShowingAddBookView = true
+                    isShowingAddBookSearch = true
                 } label: {
                     Image(systemName: "plus")
                 }
                 .accessibilityLabel("Add Book")
             }
         }
-        .sheet(isPresented: $isShowingAddBookView) {
+        .sheet(isPresented: $isShowingAddBookSearch) {
             NavigationStack {
-                AddBookView()
+                AddBookSearchView()
+                    .environmentObject(myLibraryViewModel)
             }
-            .environmentObject(myLibraryViewModel)
         }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "books.vertical")
-                .font(.system(size: 38))
-                .foregroundStyle(AppTheme.accentGold)
-
-            Text("No books added yet.")
-                .font(AppTheme.headingFont(24))
-                .foregroundStyle(AppTheme.mutedBrown)
-
-            Text("Search in Discover or tap + to add your own.")
-                .font(AppTheme.bodyFont(16))
-                .foregroundStyle(AppTheme.mutedBrown.opacity(0.75))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-        }
-    }
-
-    private var libraryList: some View {
-        List {
-            ForEach(myLibraryViewModel.books) { book in
-                NavigationLink {
-                    LibraryDetailView(bookID: book.id)
-                } label: {
-                    LibraryBookRow(book: book)
-                }
-                .listRowBackground(AppTheme.cardBeige.opacity(0.85))
+        .sheet(isPresented: $isShowingCreateList) {
+            NavigationStack {
+                CreateListView()
+                    .environmentObject(myLibraryViewModel)
             }
-            .onDelete(perform: myLibraryViewModel.deleteBooks)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-    }
-}
-
-#Preview {
-    NavigationStack {
-        MyLibraryView()
-            .environmentObject(MyLibraryViewModel())
     }
 }

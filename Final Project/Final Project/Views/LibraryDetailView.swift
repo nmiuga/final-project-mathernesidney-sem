@@ -1,36 +1,38 @@
 import SwiftUI
 
 struct LibraryDetailView: View {
-    let bookID: String
+    let listID: String
+    let savedBookID: String
 
     @EnvironmentObject private var myLibraryViewModel: MyLibraryViewModel
+
     @State private var personalRating = 0
     @State private var personalNote = ""
 
-    private var book: Book? {
-        myLibraryViewModel.book(withID: bookID)
+    private var savedBook: SavedBook? {
+        myLibraryViewModel.savedBook(listID: listID, savedBookID: savedBookID)
     }
 
     private var coverURL: URL? {
-        guard let cover = book?.coverURL else { return nil }
+        guard let cover = savedBook?.book.coverURL else { return nil }
         return URL(string: cover)
     }
 
     var body: some View {
         ScrollView {
-            if let book {
+            if let savedBook {
                 VStack(alignment: .leading, spacing: 16) {
                     coverImage
 
-                    Text(book.title)
+                    Text(savedBook.book.title)
                         .font(AppTheme.headingFont(30))
                         .foregroundStyle(AppTheme.mutedBrown)
 
-                    Text(book.authorText)
+                    Text(savedBook.book.authorText)
                         .font(AppTheme.bodyFont(18))
                         .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
 
-                    if let averageRating = book.averageRating {
+                    if let averageRating = savedBook.book.averageRating {
                         Label(String(format: "Public Rating: %.1f", averageRating), systemImage: "star.fill")
                             .font(AppTheme.bodyFont(15))
                             .foregroundStyle(AppTheme.accentGold)
@@ -40,14 +42,20 @@ struct LibraryDetailView: View {
                             .foregroundStyle(AppTheme.mutedBrown.opacity(0.75))
                     }
 
-                    if !book.description.isEmpty {
+                    if !savedBook.book.description.isEmpty {
                         Text("Description")
                             .font(AppTheme.headingFont(24))
                             .foregroundStyle(AppTheme.mutedBrown)
 
-                        Text(book.description)
+                        Text(savedBook.book.description)
                             .font(AppTheme.bodyFont(16))
                             .foregroundStyle(AppTheme.mutedBrown.opacity(0.9))
+                    }
+
+                    if !savedBook.book.categories.isEmpty {
+                        Text("Categories: \(savedBook.book.categoriesText)")
+                            .font(AppTheme.bodyFont(15))
+                            .foregroundStyle(AppTheme.mutedBrown.opacity(0.8))
                     }
 
                     personalSection
@@ -56,16 +64,16 @@ struct LibraryDetailView: View {
                 }
                 .padding()
             } else {
-                Text("This book is no longer in your library.")
+                Text("This saved book was not found.")
                     .font(AppTheme.bodyFont(16))
                     .foregroundStyle(AppTheme.mutedBrown)
                     .padding()
             }
         }
         .background(AppTheme.cream.ignoresSafeArea())
-        .navigationTitle("My Book")
+        .navigationTitle("Saved Book")
         .navigationBarTitleDisplayMode(.inline)
-        .task(id: bookID) {
+        .task(id: savedBookID) {
             loadCurrentValues()
         }
     }
@@ -86,7 +94,7 @@ struct LibraryDetailView: View {
                 .font(AppTheme.bodyFont(16))
                 .frame(height: 120)
                 .padding(8)
-                .background(AppTheme.cardBeige.opacity(0.7))
+                .background(AppTheme.cardBeige.opacity(0.72))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
             if personalNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -97,16 +105,17 @@ struct LibraryDetailView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.cardBeige.opacity(0.5))
+        .background(AppTheme.cardBeige.opacity(0.52))
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var saveButton: some View {
         Button {
-            myLibraryViewModel.updatePersonalInfo(
-                for: bookID,
-                rating: personalRating == 0 ? nil : personalRating,
-                note: personalNote
+            myLibraryViewModel.updateSavedBook(
+                listID: listID,
+                savedBookID: savedBookID,
+                personalRating: personalRating == 0 ? nil : personalRating,
+                personalNote: personalNote
             )
         } label: {
             Text("Save Personal Updates")
@@ -156,17 +165,8 @@ struct LibraryDetailView: View {
     }
 
     private func loadCurrentValues() {
-        guard let currentBook = myLibraryViewModel.book(withID: bookID) else { return }
-        personalRating = currentBook.personalRating ?? 0
-        personalNote = currentBook.personalNote ?? ""
-    }
-}
-
-#Preview {
-    let vm = MyLibraryViewModel()
-
-    NavigationStack {
-        LibraryDetailView(bookID: "preview-id")
-            .environmentObject(vm)
+        guard let current = myLibraryViewModel.savedBook(listID: listID, savedBookID: savedBookID) else { return }
+        personalRating = current.personalRating ?? 0
+        personalNote = current.personalNote ?? ""
     }
 }

@@ -1,59 +1,44 @@
 import Foundation
 
-enum BookSource: String, Codable {
-    case api
-    case manual
-}
-
 struct Book: Identifiable, Codable, Equatable {
-    var id: String
-    var title: String
-    var authors: [String]
-    var description: String
-    var coverURL: String?
-    var averageRating: Double?
-    var publishedDate: String?
-    var pageCount: Int?
-    var personalRating: Int?
-    var personalNote: String?
-    var source: BookSource
+    let id: String
+    let title: String
+    let authors: [String]
+    let description: String
+    let coverURL: String?
+    let averageRating: Double?
+    let publishedDate: String?
+    let pageCount: Int?
+    let categories: [String]
 
     var authorText: String {
         authors.isEmpty ? "Unknown Author" : authors.joined(separator: ", ")
     }
 
-    var noteText: String {
-        let trimmedNote = (personalNote ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmedNote.isEmpty ? "No personal note yet." : trimmedNote
+    var categoriesText: String {
+        categories.isEmpty ? "No categories" : categories.joined(separator: ", ")
     }
 
-    static func manual(
+    static func custom(
         title: String,
         author: String,
-        description: String,
-        personalNote: String,
-        personalRating: Int?
+        description: String
     ) -> Book {
-        let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedNote = personalNote.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        return Book(
+        Book(
             id: UUID().uuidString,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             authors: [author.trimmingCharacters(in: .whitespacesAndNewlines)],
-            description: trimmedDescription,
+            description: description.trimmingCharacters(in: .whitespacesAndNewlines),
             coverURL: nil,
             averageRating: nil,
             publishedDate: nil,
             pageCount: nil,
-            personalRating: personalRating,
-            personalNote: trimmedNote.isEmpty ? nil : trimmedNote,
-            source: .manual
+            categories: []
         )
     }
 }
 
-// MARK: - Mapping From API Model
+// MARK: - API Mapping
 
 extension Book {
     init(googleBook: GoogleBookItem) {
@@ -61,20 +46,18 @@ extension Book {
 
         self.id = googleBook.id
         self.title = info.title
-        self.authors = info.authors ?? ["Unknown Author"]
+        self.authors = info.authors ?? []
         self.description = (info.description ?? "No description available.")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        self.coverURL = Book.secureURL(from: info.coverURLString)
+        self.coverURL = Book.makeSecureURL(info.imageLinks?.thumbnail ?? info.imageLinks?.smallThumbnail)
         self.averageRating = info.averageRating
         self.publishedDate = info.publishedDate
         self.pageCount = info.pageCount
-        self.personalRating = nil
-        self.personalNote = nil
-        self.source = .api
+        self.categories = info.categories ?? []
     }
 
-    private static func secureURL(from rawURL: String?) -> String? {
-        guard let rawURL else { return nil }
-        return rawURL.replacingOccurrences(of: "http://", with: "https://")
+    private static func makeSecureURL(_ url: String?) -> String? {
+        guard let url else { return nil }
+        return url.replacingOccurrences(of: "http://", with: "https://")
     }
 }

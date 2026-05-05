@@ -6,7 +6,7 @@ final class MyLibraryViewModel: ObservableObject {
     @Published private(set) var lists: [BookList] = []
 
     private let storageKey = "book_library_lists_v2"
-    private let defaultNames = ["Want to Read", "Reading", "Finished"]
+    private let defaultNames = ["To Be Read", "Reading", "Finished"]
 
     init() {
         loadLists()

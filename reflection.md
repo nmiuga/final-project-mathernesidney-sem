@@ -1,26 +1,14 @@
-# Reflection
+# reflection.md
 
-This version shifts the project from a basic save-list app into a more realistic mini Goodreads-style experience while staying class-friendly.
+## Overall Learnings
 
-## What Worked Well
-- The list-based data model (`Book`, `SavedBook`, `BookList`) made features easier to reason about.
-- Separating discover logic (`BookSearchViewModel`) from library logic (`MyLibraryViewModel`) kept the code readable.
-- Reusing one `AddToListSheet` in multiple places reduced duplicate UI code and made behavior consistent.
+This final project taught me that building a good app is more about being intentional than adding more features. As I worked with API data, multiple screens, and user-created lists, I realized how important it was to keep everything simple and organized so the app stayed clear and easy to understand. I also learned that API data isn’t always perfect, so it’s important to recognize and handle missing information.
 
-## Main Challenges
-- Keeping Discover both browsable and searchable required clear UI-state branching:
-  - section homepage when search is empty
-  - search results when query exists
-- Preventing duplicates in a list while still allowing the same book in different lists required careful list-level checks.
-- Personal notes/ratings belong to saved entries, not the shared `Book` object, which required modeling with `SavedBook`.
+## Challenges
 
-## Why This Is Good for Class Presentation
-- The app demonstrates real API usage with modern Swift concurrency.
-- The architecture is simple enough to explain quickly (models -> service -> view models -> views).
-- The UI feels polished and portfolio-ready without using advanced frameworks.
+The higher complexity of the project made it difficult to get the initial prompt right so as to get all the fundamental features I wanted already incorporated before making edits. The AI doesn't always account for everything, so I had to make sure I was very specific in how I wanted my app to function. I also had to switch API's because the one I had initially picked was not a good fit for my app, but luckkily, the Google Books API was easy enough to work with.
 
-## Next Improvements (Optional)
-- Add small loading placeholders (skeleton cards) for homepage sections.
-- Add reorder support for custom lists.
-- Add optional filter/sort controls inside each list.
-- Move API key to a config file or environment-based setup for safer sharing.
+## Next Steps
+
+I would like to allow users to browse a wider selection of books based on different filters and genres. Right now, users can only view a handful amount of books on the discover page. It would also be fun to add in reviews of each book from different users.
+

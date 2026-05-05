@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/9DrT6EZJ)
-Native App Development — Final Project
-# BookLibrary
+# Native App Development — Final Project
+# MyBookLibrary
 
 Starter repository for NMIX 4030/6030. See the assignment page for full instructions.  
-> BookLibrary is a SwiftUI iOS app that helps readers discover books with the Google Books API and organize them into personal reading lists. It is designed for students and casual readers who want a simple, cozy Goodreads-style experience with notes and ratings.
+> MyBookLibrary is a cozy, Goodreads-style SwiftUI iOS app for discovering books with the Google Books API and organizing them into personal reading lists. Users can browse by genre, search by title/author, save books into custom lists, and track personal notes and star ratings.
 
 ## What to submit
 ## Screenshots

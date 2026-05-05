@@ -7,7 +7,7 @@ BookLibrary is a cozy, Goodreads-style SwiftUI iOS app for discovering books wit
 ## Screenshots
 ![Discover screen](assets/discover-screen.png)
 ![Book detail screen](assets/book-detail-screen.png)
-![List screen](assets/list-screen.png)
+![My Library screen](assets/list-screen.png)
 
 ## Setup Instructions
 

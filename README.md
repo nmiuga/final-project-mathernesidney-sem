@@ -1,13 +1,13 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/9DrT6EZJ)
 # Native App Development — Final Project
 
-Starter repository for NMIX 4030/6030. See the assignment page for full instructions.
+## MyBookLibrary
+BookLibrary is a cozy, Goodreads-style SwiftUI iOS app for discovering books with the Google Books API and organizing them into personal reading lists. Users can browse by genre, search by title/author, save books into custom lists, and track personal notes and star ratings.
 
-## What to submit
+## Screenshots
+![Discover screen](assets/discover-screen.png)
+![Book detail screen](assets/book-detail-screen.png)
+![List screen](assets/list-screen.png)
 
-Your repo should contain the following when you submit:
+## Setup Instructions
 
-- Your Xcode project folder (the complete app)
-- - `prompt.md` — your initial prompt (replace the placeholder)
-  - - `edits.md` — numbered list of manual adjustments (replace the placeholder)
-    - - `reflection.md` — 150-300 word reflection (replace the placeholder)

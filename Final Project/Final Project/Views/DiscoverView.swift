@@ -84,7 +84,6 @@ struct DiscoverView: View {
                     DiscoverSectionView(title: "Romance", books: bookSearchViewModel.romanceBooks)
                     DiscoverSectionView(title: "Mystery", books: bookSearchViewModel.mysteryBooks)
                     DiscoverSectionView(title: "Science Fiction", books: bookSearchViewModel.sciFiBooks)
-                    DiscoverSectionView(title: "Young Adult", books: bookSearchViewModel.youngAdultBooks)
                 }
                 .padding(.vertical)
             }
@@ -109,8 +108,7 @@ struct DiscoverView: View {
         bookSearchViewModel.fantasyBooks.isEmpty &&
         bookSearchViewModel.romanceBooks.isEmpty &&
         bookSearchViewModel.mysteryBooks.isEmpty &&
-        bookSearchViewModel.sciFiBooks.isEmpty &&
-        bookSearchViewModel.youngAdultBooks.isEmpty
+        bookSearchViewModel.sciFiBooks.isEmpty
     }
 
     private func stateMessage(title: String, message: String) -> some View {

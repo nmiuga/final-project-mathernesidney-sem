@@ -10,7 +10,6 @@ final class BookSearchViewModel: ObservableObject {
     @Published private(set) var romanceBooks: [Book] = []
     @Published private(set) var mysteryBooks: [Book] = []
     @Published private(set) var sciFiBooks: [Book] = []
-    @Published private(set) var youngAdultBooks: [Book] = []
 
     @Published private(set) var searchResults: [Book] = []
     @Published private(set) var isLoadingSections = false
@@ -94,14 +93,12 @@ final class BookSearchViewModel: ObservableObject {
             async let romance = service.searchBooks(query: "subject:romance", maxResults: 12)
             async let mystery = service.searchBooks(query: "subject:mystery", maxResults: 12)
             async let sciFi = service.searchBooks(query: "subject:science fiction", maxResults: 12)
-            async let youngAdult = service.searchBooks(query: "subject:young adult", maxResults: 12)
 
             popularBooks = try await popular
             fantasyBooks = try await fantasy
             romanceBooks = try await romance
             mysteryBooks = try await mystery
             sciFiBooks = try await sciFi
-            youngAdultBooks = try await youngAdult
 
             hasLoadedSections = true
         } catch {

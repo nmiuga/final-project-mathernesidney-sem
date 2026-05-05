@@ -5,9 +5,7 @@
 BookLibrary is a cozy, Goodreads-style SwiftUI iOS app for discovering books with the Google Books API and organizing them into personal reading lists. Users can browse by genre, search by title/author, save books into custom lists, and track personal notes and star ratings.
 
 ## Screenshots
-![Discover screen](assets/discover-screen.png)
-![Book detail screen](assets/book-detail-screen.png)
-![My Library screen](assets/list-screen.png)
+![Discover screen](assets/discover-screen.png) ![Book detail screen](assets/book-detail-screen.png) ![My Library screen](assets/list-screen.png)
 
 ## Setup Instructions
 

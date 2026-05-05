@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 596897172F8D509900C73257 /* Build configuration list for PBXProject "Final Project" */;
+			buildConfigurationList = 596897172F8D509900C73257 /* Build configuration list for PBXProject "MyBookLibrary" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -313,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		596897172F8D509900C73257 /* Build configuration list for PBXProject "Final Project" */ = {
+		596897172F8D509900C73257 /* Build configuration list for PBXProject "MyBookLibrary" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				596897252F8D509900C73257 /* Debug */,
